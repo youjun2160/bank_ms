@@ -3,4 +3,6 @@ project(bank_ms)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(bank_ms main.cpp)
+add_executable(bank_ms main.cpp
+        tool.cpp
+        tool.h)
