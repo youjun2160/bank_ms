@@ -1,0 +1,3 @@
+D:/github_lib/bank_ms/cmake-build-debug/CMakeFiles/bank_ms.dir
+D:/github_lib/bank_ms/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/github_lib/bank_ms/cmake-build-debug/CMakeFiles/rebuild_cache.dir
