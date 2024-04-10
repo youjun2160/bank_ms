@@ -9,21 +9,82 @@
 
 using namespace std;
 
-void Administrators::uiShow() {
-    cout << "==========ÁÆ°ÁêÜÂëòÊ®°Âºè==========" << endl;
-    cout << "1.Áî®Êà∑‰ø°ÊÅØÂΩïÂÖ•" << endl;
-    cout << "2.‰øÆÊîπÁÆ°ÁêÜÂëòÂØÜÁ†Å" << endl;
-    cout << "3.‰øÆÊîπÊåáÂÆöË¥¶Êà∑‰ø°ÊÅØ" << endl;
-    cout << "4.‰ø°ÊÅØÁÆ°ÁêÜ‰∏öÂä°" << endl;
-    cout << "0.ÈÄÄÂá∫ÁÆ°ÁêÜÂëòÊ®°Âºè" << endl;
-    cout << "============================" << endl;
-    cout << "ËØ∑ËæìÂÖ•ÊÇ®ÁöÑÈÄâÊã©:";
+
+
+//π‹¿Ì‘±¿‡≥ı ºªØ
+Administrators::Administrators() {
 }
 
-bool Administrators::checkPassword(std::string password) {
-    if (password == this->password) {
-        return true;
-    } else {
+//π‹¿Ì‘±ƒ£ Ωuiœ‘ æ
+void Administrators::uiShow() {
+    cout << "==========π‹¿Ì‘±ƒ£ Ω==========" << endl;
+    cout << "1.”√ªß–≈œ¢¬º»Î" << endl;
+    cout << "2.–ﬁ∏ƒπ‹¿Ì‘±√‹¬Î" << endl;
+    cout << "3.–ﬁ∏ƒ÷∏∂®’Àªß–≈œ¢" << endl;
+    cout << "4.–≈œ¢π‹¿Ì“µŒÒ" << endl;
+    cout << "0.ÕÀ≥ˆπ‹¿Ì‘±ƒ£ Ω" << endl;
+    cout << "============================" << endl;
+    cout << "«Î ‰»Îƒ˙µƒ—°‘Ò:";
+}
+
+//≈–∂œ ‰»Îµƒ√‹¬Î «∑Ò’˝»∑
+bool Administrators::checkIn() {
+    cout << "«Î ‰»Îπ‹¿Ì‘±√‹¬Î£∫" << endl;
+    string password;
+    cin >> password;
+    //≈–∂œ√‹¬Î «∑Ò’˝»∑£¨≤ª’˝»∑‘ÚÕÀ≥ˆπ‹¿Ì‘±œµÕ≥
+    if (password != this->password) {
+        cout << "√‹¬Î¥ÌŒÛ£°" << endl;
         return false;
+    }
+    return true;
+}
+
+//”√ªß–≈œ¢¬º»Î
+bool Administrators::inputInfo() {
+    while (true) {
+        user *newUser = new user;
+
+        if (newUser == nullptr) {
+            cout << "ƒ⁄¥Ê∑÷≈‰ ß∞‹" << endl;
+            return false;
+        }
+
+        cout << "==========”√ªß–≈œ¢¬º»Î==========" << endl;
+        cout << "«Î ‰»Î”√ªß–≈œ¢:" << endl;
+        cout << "’À∫≈:" << endl;
+        cin >> newUser->account;
+        cout << "–’√˚:" << endl;
+        cin >> newUser->name;
+        cout << "√‹¬Î:" << endl;
+        cin >> newUser->password;
+        cout << "…Ì∑›÷§∫≈:" << endl;
+        cin >> newUser->id;
+        cout << "µÁª∞∫≈¬Î:" << endl;
+        cin >> newUser->phoneNumber;
+        cout << "============================" << endl;
+
+        if(head == nullptr) {
+            head = new user;
+        } else {
+            head->next = newUser;
+        }
+        newUser->next = nullptr;
+
+        cout << "-----------¬º»Î≥…π¶------------" << endl;
+
+        while(true){
+            cout << " «∑Ò“™ºÃ–¯¬º»Î”√ªß–≈œ¢(y/n):" << endl;
+            char choice;
+            cin >> choice;
+            if (choice == 'n' || choice == 'N') {
+                return false;
+            } else if (choice == 'y' || choice == 'Y') {
+                break;
+            } else {
+                cout << " ‰»Î”–ŒÛ,«Î÷ÿ–¬ ‰»Î" << endl;
+            }
+        }
+
     }
 }

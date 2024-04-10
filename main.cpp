@@ -18,12 +18,7 @@ int main() {
         if (choice == 1) {
             while(true) {
                 Administrators ad;
-                cout << "请输入管理员密码：" << endl;
-                string password;
-                cin >> password;
-                //判断密码是否正确，不正确则退出管理员系统
-                if (!ad.checkPassword(password)) {
-                    cout << "密码错误！" << endl;
+                if (!ad.checkIn()) {
                     break;
                 }
                 int choice2 = -1;
@@ -32,6 +27,9 @@ int main() {
                     cin >> choice2;
                     if (choice2 == 1) {
                         //用户信息录入
+                        if (ad.inputInfo()) {
+                            break;
+                        }
                     } else if (choice2 == 2) {
                         //修改管理员密码
                     } else if (choice2 == 3) {

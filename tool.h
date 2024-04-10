@@ -11,9 +11,23 @@
 
 class Administrators {
 public:
+    typedef struct user {
+        std::string account;
+        std::string name;
+        std::string password;
+        std::string id;
+        std::string phoneNumber;
+        struct user *next;
+    } user;
+
     std::string password = "123456";
+    Administrators();
     void uiShow();
-    bool checkPassword(std::string password);
+    bool checkIn();
+    bool inputInfo();
+    int userNumber();
+
+    user *head = nullptr;
 };
 
 class user {
