@@ -32,6 +32,9 @@ int main() {
                         }
                     } else if (choice2 == 2) {
                         //修改管理员密码
+                        if (ad.changePassword()) {
+                            break;
+                        }
                     } else if (choice2 == 3) {
                         //修改指定账户信息
                     } else if (choice2 == 4) {

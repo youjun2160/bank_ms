@@ -27,7 +27,11 @@ public:
     bool inputInfo();
     int userNumber();
 
+    //修改密码
+    bool changePassword();
+
     user *head = nullptr;
+    user *tail = nullptr;
 };
 
 class user {
