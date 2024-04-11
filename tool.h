@@ -36,6 +36,9 @@ public:
     //快速导入用户信息
     bool importInfo();
 
+    //展示所有用户信息
+    bool showInfo();
+
     //修改用户信息
     bool changeInfo();
 

@@ -41,7 +41,13 @@ Administrators::Administrators() {
         ifile2.close();
     }
 
-
+    cout << "管理员模式已启动" << endl;
+    cout << "开始同步数据" << endl;
+    if(importInfo()){
+        cout << "同步完成" << endl;
+    } else {
+        cout << "同步失败" << endl;
+    }
 }
 
 //管理员模式ui显示
@@ -114,6 +120,7 @@ bool Administrators::inputInfo() {
         }
 
         user *temp = head;
+        userNum = 0;
         while(temp != nullptr) {
             userNum++;
             temp = temp->next;
@@ -210,7 +217,7 @@ bool Administrators::deleteUser() {
     if (x == 0) {
         cout << "用户不存在！" << endl;
     } else {
-        ofstream ofile("userNumber.txt");
+        ofstream ofile("userNumb.txt");
         if (ofile.is_open()){
             ofile << userNum;
             ofile.close();
@@ -228,5 +235,59 @@ bool Administrators::deleteUser() {
             rename("userInformation2.txt", "userInformation.txt");
         }
     }
+    return true;
+}
+
+bool Administrators::importInfo() {
+    user *temp = head;
+
+    ifstream ifile("userInformation.txt");
+    if(!ifile.is_open()) {
+        cout << "文件打开失败！" << endl;
+    }
+
+    string tempStr;
+    while(std::getline(ifile, tempStr)) {
+        user *newUser = new user;
+        newUser->account = tempStr.substr(0, tempStr.find(' '));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        newUser->name = tempStr.substr(0, tempStr.find(' '));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        newUser->password = tempStr.substr(0, tempStr.find(' '));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        newUser->id = tempStr.substr(0, tempStr.find(' '));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        newUser->phoneNumber = tempStr.substr(0, tempStr.find(' '));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        if (head == nullptr) {
+            head = newUser;
+            tail = newUser;
+            head->pre = nullptr;
+        } else {
+            tail->next = newUser;
+            newUser->pre = tail;
+            tail = newUser;
+        }
+    }
+    ifile.close();
+    return true;
+}
+
+bool Administrators::showInfo() {
+    user *temp = head;
+    cout << "=========================" << endl;
+    cout << "所有用户信息如下：" << endl;
+    while(temp != nullptr) {
+        cout << "账号：" << temp->account << endl;
+        cout << "用户名：" << temp->name << endl;
+        cout << "密码：" << temp->password << endl;
+        cout << "身份证号：" << temp->id << endl;
+        cout << "电话号码：" << temp->phoneNumber << endl;
+        if (temp->next != nullptr){
+            cout << "------------------------" << endl;
+        }
+        temp = temp->next;
+    }
+    cout << "=========================" << endl;
     return true;
 }

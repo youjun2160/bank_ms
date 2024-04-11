@@ -37,11 +37,10 @@ int main() {
                         }
                     } else if (choice2 == 3) {
                         //修改指定账户信息
-                        if (ad.deleteUser()) {
-                            break;
-                        }
+                        ad.deleteUser();
                     } else if (choice2 == 4) {
                         //信息管理业务
+                        ad.showInfo();
                     }else if(choice2 == 5) {
                         //显示账户数量
                         cout << "用户数量：" << ad.userNumber() << endl;
