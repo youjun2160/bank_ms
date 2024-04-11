@@ -3,7 +3,6 @@
 //
 
 //tool.h
-
 #ifndef BANK_MS_TOOL_H
 #define BANK_MS_TOOL_H
 
@@ -18,6 +17,7 @@ public:
         std::string id;
         std::string phoneNumber;
         struct user *next;
+        struct user *pre;
     } user;
 
     std::string password = "123456";
@@ -30,8 +30,18 @@ public:
     //修改密码
     bool changePassword();
 
+    //删除用户
+    bool deleteUser();
+
+    //快速导入用户信息
+    bool importInfo();
+
+    //修改用户信息
+    bool changeInfo();
+
     user *head = nullptr;
     user *tail = nullptr;
+    int userNum;
 };
 
 class user {

@@ -28,6 +28,20 @@ Administrators::Administrators() {
         ifile.close();
     }
 
+    string fp2 = "userNum.txt";
+    if (!filesystem::exists(fp2)) {
+        ofstream ofile("userNum.txt");
+        ofile << "0";
+        ofile.close();
+    }
+
+    ifstream ifile2("userNum.txt");
+    if (ifile2.is_open()) {
+        ifile2 >> userNum;
+        ifile2.close();
+    }
+
+
 }
 
 //管理员模式ui显示
@@ -37,6 +51,7 @@ void Administrators::uiShow() {
     cout << "2.修改管理员密码" << endl;
     cout << "3.修改指定账户信息" << endl;
     cout << "4.信息管理业务" << endl;
+    cout << "5.显示账户数量" << endl;
     cout << "0.退出管理员模式" << endl;
     cout << "============================" << endl;
     cout << "请输入您的选择:";
@@ -83,10 +98,31 @@ bool Administrators::inputInfo() {
         if(head == nullptr) {
             head = newUser;
             tail = newUser;
+            head->pre = nullptr;
         } else {
             tail->next = newUser;
+            newUser->pre = tail;
+            tail = newUser;
         }
         newUser->next = nullptr;
+
+        //将用户信息写入文件
+        ofstream ofile("userInformation.txt", ios::app);
+        if(ofile.is_open()) {
+            ofile << newUser->account << " " << newUser->name << " " << newUser->password << " " << newUser->id << " " << newUser->phoneNumber << endl;
+            ofile.close();
+        }
+
+        user *temp = head;
+        while(temp != nullptr) {
+            userNum++;
+            temp = temp->next;
+        }
+        ofstream ofile2("userNum.txt");
+        if(ofile2.is_open()) {
+            ofile2 << userNum;
+            ofile2.close();
+        }
 
         cout << "-----------录入成功------------" << endl;
 
@@ -108,13 +144,7 @@ bool Administrators::inputInfo() {
 
 //查询当前用户个数
 int Administrators::userNumber() {
-    int number = 0;
-    user *temp = head;
-    while(temp != nullptr) {
-        number++;
-        temp = temp->next;
-    }
-    return number;
+    return userNum;
 }
 
 //修改管理员密码
@@ -139,4 +169,64 @@ bool Administrators::changePassword() {
 
     cout << "密码修改成功！" << endl;
     return false;
+}
+
+
+//删除用户
+bool Administrators::deleteUser() {
+    cout << "请输入要删除的账号:" << endl;
+    string account;
+    cin >> account;
+    user *temp = head;
+    int x = 0;
+    while(temp != nullptr) {
+        if (temp->account == account) {
+            x = 1;
+            if (temp == head) {
+                head = temp->next;
+                if (head != nullptr) {
+                    head->pre = nullptr;
+                }
+                delete temp;
+            } else if (temp == tail) {
+                tail = temp->pre;
+                tail->next = nullptr;
+                delete temp;
+            } else {
+                temp = temp->pre;
+                user *temp2 = temp->next;
+                temp->next = temp2->next;
+                temp2->next->pre = temp;
+                delete temp2;
+            }
+            userNum--;
+            cout << "用户删除成功！" << endl;
+            break;
+        } else {
+            temp = temp->next;
+        }
+    }
+
+    if (x == 0) {
+        cout << "用户不存在！" << endl;
+    } else {
+        ofstream ofile("userNumber.txt");
+        if (ofile.is_open()){
+            ofile << userNum;
+            ofile.close();
+        }
+
+        ofile.open("userInformation2.txt");
+        if (ofile.is_open()){
+            temp = head;
+            while(temp != nullptr) {
+                ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << endl;
+                temp = temp->next;
+            }
+            ofile.close();
+            remove("userInformation.txt");
+            rename("userInformation2.txt", "userInformation.txt");
+        }
+    }
+    return true;
 }
