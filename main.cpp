@@ -50,8 +50,9 @@ int main() {
                         cout << "输入有误,请重新输入" << endl;
                     }
                 }
-
-
+                if (choice2 == 0){
+                    break;
+                }
             }
 
         } else if (choice == 2) {

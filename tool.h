@@ -31,7 +31,7 @@ public:
     bool changePassword();
 
     //删除用户
-    bool deleteUser();
+    void deleteUser(user *delUser);
 
     //快速导入用户信息
     bool importInfo();
