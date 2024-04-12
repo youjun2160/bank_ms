@@ -48,6 +48,13 @@ Administrators::Administrators() {
     } else {
         cout << "同步失败" << endl;
     }
+
+    //如果没有userInformation.txt文件，就创建
+    string fp3 = "userInformation.txt";
+    if (!filesystem::exists(fp3)) {
+        ofstream ofile("userInformation.txt");
+        ofile.close();
+    }
 }
 
 //管理员模式ui显示
@@ -87,7 +94,7 @@ bool Administrators::inputInfo() {
         }
 
         cout << "当前用户数量:" << userNumber() << endl;
-        cout << "===========用户信息录入===========" << endl;
+        cout << "==========用户信息录入==========" << endl;
         cout << "请输入用户信息:" << endl;
         cout << "账号:" << endl;
         cin >> newUser->account;
@@ -99,7 +106,7 @@ bool Administrators::inputInfo() {
         cin >> newUser->id;
         cout << "电话号码:" << endl;
         cin >> newUser->phoneNumber;
-        cout << "==============================" << endl;
+        cout << "=============================" << endl;
 
         if(head == nullptr) {
             head = newUser;
@@ -201,7 +208,7 @@ void Administrators::deleteUser(user *delUser) {
             userNum--;
             cout << "用户删除成功！" << endl;
 
-        ofstream ofile("userNumb.txt");
+        ofstream ofile("userNum.txt");
         if (ofile.is_open()){
             ofile << userNum;
             ofile.close();
@@ -297,6 +304,8 @@ bool Administrators::changeInfo() {
     }
 
     while(true) {
+        cout << "=========================" << endl;
+        cout << "请选择要修改的内容:" << endl;
         cout << "1.修改用户名" << endl;
         cout << "2.修改密码" << endl;
         cout << "3.修改身份证号" << endl;
@@ -306,6 +315,7 @@ bool Administrators::changeInfo() {
         cout << "请输入您的选择:";
         int choice;
         cin >> choice;
+        cout << "=========================" << endl;
         switch (choice) {
             case 1:
                 cout << "请输入新用户名:" << endl;
