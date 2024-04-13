@@ -63,7 +63,7 @@ void Administrators::uiShow() {
     cout << "1.用户信息录入" << endl;
     cout << "2.修改管理员密码" << endl;
     cout << "3.修改指定账户信息" << endl;
-    cout << "4.信息管理业务" << endl;
+    cout << "4.显示所有用户信息" << endl;
     cout << "5.显示账户数量" << endl;
     cout << "0.退出管理员模式" << endl;
     cout << "==============================" << endl;
@@ -106,6 +106,7 @@ bool Administrators::inputInfo() {
         cin >> newUser->id;
         cout << "电话号码:" << endl;
         cin >> newUser->phoneNumber;
+        newUser->balance = 0;
         cout << "=============================" << endl;
 
         if(head == nullptr) {
@@ -122,7 +123,7 @@ bool Administrators::inputInfo() {
         //将用户信息写入文件
         ofstream ofile("userInformation.txt", ios::app);
         if(ofile.is_open()) {
-            ofile << newUser->account << " " << newUser->name << " " << newUser->password << " " << newUser->id << " " << newUser->phoneNumber << endl;
+            ofile << newUser->account << " " << newUser->name << " " << newUser->password << " " << newUser->id << " " << newUser->phoneNumber << " " << newUser->balance << endl;
             ofile.close();
         }
 
@@ -218,7 +219,7 @@ void Administrators::deleteUser(user *delUser) {
         if (ofile.is_open()){
             user *temp = head;
             while(temp != nullptr) {
-                ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << endl;
+                ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << " " << temp->balance << endl;
                 temp = temp->next;
             }
             ofile.close();
@@ -250,6 +251,8 @@ bool Administrators::importInfo() {
         tempStr = tempStr.substr(tempStr.find(' ') + 1);
         newUser->phoneNumber = tempStr.substr(0, tempStr.find(' '));
         tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        newUser->balance = stoi(tempStr.substr(0, tempStr.find(' ')));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
         if (head == nullptr) {
             head = newUser;
             tail = newUser;
@@ -264,7 +267,12 @@ bool Administrators::importInfo() {
     return true;
 }
 
+//展示所有用户信息
 bool Administrators::showInfo() {
+    if (userNum == 0) {
+        cout << "暂无用户信息" << endl;
+        return true;
+    }
     user *temp = head;
     cout << "=========================" << endl;
     cout << "所有用户信息如下：" << endl;
@@ -274,6 +282,7 @@ bool Administrators::showInfo() {
         cout << "密码：" << temp->password << endl;
         cout << "身份证号：" << temp->id << endl;
         cout << "电话号码：" << temp->phoneNumber << endl;
+        cout << "余额：" << temp->balance << endl;
         if (temp->next != nullptr){
             cout << "------------------------" << endl;
         }
@@ -343,7 +352,271 @@ bool Administrators::changeInfo() {
 
         }
         if(choice != 5) {
+            ofstream ofile("userInformation2.txt");
+            if(!ofile.is_open()) {
+                cout << "文件打开失败！" << endl;
+                return true;
+            }
 
+            while(temp != nullptr) {
+                ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << endl;
+                temp = temp->next;
+            }
+            ofile.close();
+
+            remove("userInformation.txt");
+            rename("userInformation2.txt", "userInformation.txt");
+
+            return true;
         }
+    }
+}
+
+//析构函数
+Administrators::~Administrators() {
+    //保存信息
+    ofstream ofile("userInformation.txt");
+    if(!ofile.is_open()) {
+        cout << "文件打开失败！" << endl;
+        return;
+    }
+    user *temp = head;
+    while(temp != nullptr) {
+        ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << " " << temp->balance << endl;
+        temp = temp->next;
+    }
+    ofile.close();
+
+    //释放内存
+    user *temp2 = head;
+    while(temp2 != nullptr) {
+        head = temp2->next;
+        delete temp2;
+        temp2 = head;
+    }
+}
+
+//==================================================================================================================================================
+
+//构造函数
+User::User() {
+    head = nullptr;
+    tail = nullptr;
+
+    if (importInfo()) {
+        cout << "用户信息导入成功！" << endl;
+    }
+}
+
+//快速导入用户信息
+bool User::importInfo() {
+    ifstream ifile;
+    ifile.open("userInformation.txt");
+    if (!ifile) {
+        cout << "文件打开失败！" << endl;
+        return false;
+    }
+    string tempStr;
+    while(getline(ifile, tempStr)) {
+        user *newUser = new user;
+        newUser->account = tempStr.substr(0, tempStr.find(' '));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        newUser->name = tempStr.substr(0, tempStr.find(' '));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        newUser->password = tempStr.substr(0, tempStr.find(' '));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        newUser->id = tempStr.substr(0, tempStr.find(' '));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        newUser->phoneNumber = tempStr.substr(0, tempStr.find(' '));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        newUser->balance = stoi(tempStr.substr(0, tempStr.find(' ')));
+        tempStr = tempStr.substr(tempStr.find(' ') + 1);
+        if (head == nullptr) {
+            head = newUser;
+            tail = newUser;
+            head->pre = nullptr;
+        } else {
+            tail->next = newUser;
+            newUser->pre = tail;
+            tail = newUser;
+        }
+    }
+    ifile.close();
+    return true;
+}
+
+//快速导出用户信息
+bool User::exportInfo() {
+    ofstream ofile;
+    ofile.open("userInformation.txt");
+    if (!ofile) {
+        cout << "文件打开失败！" << endl;
+        return false;
+    }
+    user *temp = head;
+    while(temp != nullptr) {
+        ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << endl;
+        temp = temp->next;
+    }
+    ofile.close();
+    return true;
+}
+
+//登录
+bool User::login() {
+    //判断是否有用户
+    if (head == nullptr) {
+        cout << "没有用户信息，请先添加用户信息" << endl;
+        return false;
+    }
+
+
+    cout << "请输入账号:" << endl;
+    string account;
+    cin >> account;
+    cout << "请输入密码:" << endl;
+    string password;
+    cin >> password;
+    user *temp = head;
+    while(temp != nullptr) {
+        if (account == temp->account && password == temp->password) {
+            cout << "登录成功！" << endl;
+            curAccount = temp;
+            return true;
+        } else if(account == temp->account && password != temp->password) {
+            cout << "密码有误，请重新输入" << endl;
+            return false;
+        }
+        temp = temp->next;
+    }
+    cout << "该账号不存在" << endl;
+    return false;
+}
+
+//ui展示
+void User::uiShow() {
+    cout << "=========欢迎来到银行系统=========" << endl;
+    cout << "1.存款" << endl;
+    cout << "2.取款" << endl;
+    cout << "3.余额查询" << endl;
+    cout << "4.转账" << endl;
+    cout << "5.修改信息" << endl;
+    cout << "6.展示用户信息" << endl;
+    cout << "0.退出" << endl;
+    cout << "===============================" << endl;
+    cout << "请输入您的选择:";
+}
+
+//存款
+bool User::save() {
+    cout << "请输入存款金额:" << endl;
+    int money;
+    cin >> money;
+    curAccount->balance += money;
+    cout << "存款成功！" << endl;
+    return true;
+}
+
+//取款
+bool User::take() {
+    cout << "请输入取款金额:" << endl;
+    int money;
+    cin >> money;
+    if (money > curAccount->balance) {
+        cout << "余额不足，请重新输入" << endl;
+        return false;
+    }
+    curAccount->balance -= money;
+    cout << "取款成功！" << endl;
+    return true;
+}
+
+//余额查询
+bool User::balance() {
+    cout << "当前余额：" << curAccount->balance << endl;
+    return true;
+}
+
+//转账
+bool User::transfer() {
+    cout << "请输入转账金额:" << endl;
+    int money;
+    cin >> money;
+    if (money > curAccount->balance) {
+        cout << "余额不足，请重新输入" << endl;
+        return false;
+    }
+    cout << "请输入对方账号:" << endl;
+    string account;
+    cin >> account;
+    user *temp = head;
+    while(temp != nullptr) {
+        if (account == temp->account) {
+            temp->balance += money;
+            curAccount->balance -= money;
+            cout << "转账成功！" << endl;
+            return true;
+        }
+        temp = temp->next;
+    }
+    cout << "该账号不存在" << endl;
+    return false;
+}
+
+//修改信息
+bool User::changeInfo() {
+    cout << "请输入修改后的信息" << endl;
+    cout << "姓名：" << endl;
+    string name;
+    cin >> name;
+    cout << "密码：" << endl;
+    string password;
+    cin >> password;
+    cout << "身份证号：" << endl;
+    string id;
+    cin >> id;
+    cout << "手机号码：" << endl;
+    string phoneNumber;
+    cin >> phoneNumber;
+    curAccount->name = name;
+    curAccount->password = password;
+    curAccount->id = id;
+    curAccount->phoneNumber = phoneNumber;
+    cout << "修改成功！" << endl;
+    return true;
+}
+
+//展示该用户所有信息
+bool User::showInfo() {
+    user *temp = head;
+    while(temp != nullptr) {
+        if (temp->account == curAccount->account) {
+            cout << "账号：" << temp->account << endl;
+            cout << "姓名：" << temp->name << endl;
+            cout << "密码：" << temp->password << endl;
+            cout << "身份证号：" << temp->id << endl;
+            cout << "手机号码：" << temp->phoneNumber << endl;
+            cout << "余额：" << temp->balance << endl;
+            return true;
+        }
+        temp = temp->next;
+    }
+    return true;
+}
+
+//析构函数
+User::~User() {
+
+    //将用户信息保存进文件
+    if(exportInfo()) {
+        cout << "用户信息保存成功！" << endl;
+    }
+
+    //释放内存
+    user *temp = head;
+    while(temp != nullptr) {
+        user *delUser = temp;
+        temp = temp->next;
+        delete delUser;
     }
 }

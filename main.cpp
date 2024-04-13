@@ -56,6 +56,49 @@ int main() {
             }
 
         } else if (choice == 2) {
+            User user;
+            if(!user.login()){
+                continue;
+            }
+                while(true){
+                    user.uiShow();
+                    cin >> choice;
+                    switch(choice){
+                        case 1:
+                            //存款
+                            user.save();
+                            break;
+                        case 2:
+                            //取款
+                            user.take();
+                            break;
+                        case 3:
+                            //余额查询
+                            user.balance();
+                            break;
+                        case 4:
+                            //转账
+                            user.transfer();
+                            break;
+                        case 5:
+                            //修改信息
+                            user.changeInfo();
+                            break;
+                        case 6:
+                            //展示用户信息
+                            user.showInfo();
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            cout << "输入有误,请重新输入" << endl;
+                            break;
+                    }
+                    if(choice == 0){
+                        break;
+                    }
+                }
+
 
         } else if (choice == 0) {
             break;
