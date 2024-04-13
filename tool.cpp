@@ -447,15 +447,14 @@ bool User::importInfo() {
 
 //快速导出用户信息
 bool User::exportInfo() {
-    ofstream ofile;
-    ofile.open("userInformation.txt");
-    if (!ofile) {
+    ofstream ofile("userInformation.txt");
+    if (!ofile.is_open()) {
         cout << "文件打开失败！" << endl;
         return false;
     }
     user *temp = head;
     while(temp != nullptr) {
-        ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << endl;
+        ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << " " << temp->balance << endl;
         temp = temp->next;
     }
     ofile.close();
