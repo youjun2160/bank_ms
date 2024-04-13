@@ -393,6 +393,8 @@ User::User() {
     if (importInfo()) {
         cout << "用户信息导入成功！" << endl;
     }
+
+
 }
 
 //快速导入用户信息
@@ -469,9 +471,35 @@ bool User::login() {
         if (account == temp->account && password == temp->password) {
             cout << "登录成功！" << endl;
             curAccount = temp;
+
+            //生成一个用户操作历史记录文件
+            string fp = curAccount->account + "userHistory.txt";
+            if (!filesystem::exists(fp)) {
+                ofstream ofile("../" + fp, ios::app);
+                ofile << "用户操作历史记录文件" << endl;
+                ofile << "账号\t\t操作\t\t时间" << endl;
+                ofile.close();
+            }
+            ofstream ofile("../" + fp, ios::app);
+            ofile << curAccount->account << "\t\t登录\t\t" << time(nullptr) << endl << endl;
+            ofile.close();
+
             return true;
         } else if(account == temp->account && password != temp->password) {
+            curAccount = temp;
             cout << "密码有误，请重新输入" << endl;
+            //生成一个用户操作历史记录文件
+            string fp = curAccount->account + "userHistory.txt";
+            if (!filesystem::exists("../" + fp)) {
+                ofstream ofile("../" + fp, ios::app);
+                ofile << "用户操作历史记录文件" << endl;
+                ofile << "账号\t\t操作\t\t时间" << endl;
+                ofile.close();
+            }
+            ofstream ofile("../" + fp, ios::app);
+            ofile << curAccount->account << "\t\t错误密码登录\t\t" << time(nullptr) << endl << endl;
+            ofile.close();
+
             return false;
         }
         temp = temp->next;
@@ -501,6 +529,12 @@ bool User::save() {
     cin >> money;
     curAccount->balance += money;
     cout << "存款成功！" << endl;
+
+    //明细记录存入多少
+    ofstream ofile("../" + curAccount->account + "userHistory.txt", ios::app);
+    ofile << curAccount->account << "\t\t存入:" << money << "\t\t" << time(nullptr) << endl << endl;
+    ofile.close();
+
     return true;
 }
 
@@ -515,6 +549,12 @@ bool User::take() {
     }
     curAccount->balance -= money;
     cout << "取款成功！" << endl;
+
+    //明细记录取出多少
+    ofstream ofile("../" + curAccount->account + "userHistory.txt", ios::app);
+    ofile << curAccount->account << "\t\t取出:" << money << "\t\t" << time(nullptr) << endl << endl;
+    ofile.close();
+
     return true;
 }
 
@@ -542,6 +582,12 @@ bool User::transfer() {
             temp->balance += money;
             curAccount->balance -= money;
             cout << "转账成功！" << endl;
+
+            //明细记录转账多少
+            ofstream ofile("../" + curAccount->account + "userHistory.txt", ios::app);
+            ofile << curAccount->account << "\t\t转账:" << money << "->" << temp->account << "\t\t" << time(nullptr) << endl << endl;
+            ofile.close();
+
             return true;
         }
         temp = temp->next;
@@ -570,6 +616,12 @@ bool User::changeInfo() {
     curAccount->id = id;
     curAccount->phoneNumber = phoneNumber;
     cout << "修改成功！" << endl;
+
+    //明细记录修改信息
+    ofstream ofile("../" + curAccount->account + "userHistory.txt", ios::app);
+    ofile << curAccount->account << "\t\t修改信息\t\t" << time(nullptr) << endl << endl;
+    ofile.close();
+
     return true;
 }
 
