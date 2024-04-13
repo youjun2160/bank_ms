@@ -8,6 +8,8 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <chrono>
+#include <ctime>
 
 using namespace std;
 
@@ -481,7 +483,10 @@ bool User::login() {
                 ofile.close();
             }
             ofstream ofile("../" + fp, ios::app);
-            ofile << curAccount->account << "\t\t登录\t\t" << time(nullptr) << endl << endl;
+            //获取系统当前时间填入
+            auto now = chrono::system_clock::now();
+            time_t now_time = chrono::system_clock::to_time_t(now);
+            ofile << curAccount->account << "\t\t登录\t\t" << ctime(&now_time) << endl << endl;
             ofile.close();
 
             return true;
@@ -497,7 +502,10 @@ bool User::login() {
                 ofile.close();
             }
             ofstream ofile("../" + fp, ios::app);
-            ofile << curAccount->account << "\t\t错误密码登录\t\t" << time(nullptr) << endl << endl;
+            //获取系统当前时间填入
+            auto now = chrono::system_clock::now();
+            time_t now_time = chrono::system_clock::to_time_t(now);
+            ofile << curAccount->account << "\t\t登录\t\t" << ctime(&now_time) << endl << endl;
             ofile.close();
 
             return false;
@@ -532,7 +540,9 @@ bool User::save() {
 
     //明细记录存入多少
     ofstream ofile("../" + curAccount->account + "userHistory.txt", ios::app);
-    ofile << curAccount->account << "\t\t存入:" << money << "\t\t" << time(nullptr) << endl << endl;
+    auto now = chrono::system_clock::now();
+    time_t now_time = chrono::system_clock::to_time_t(now);
+    ofile << curAccount->account << "\t\t存入:" << money << "\t\t" << ctime(&now_time) << endl << endl;
     ofile.close();
 
     return true;
@@ -552,7 +562,9 @@ bool User::take() {
 
     //明细记录取出多少
     ofstream ofile("../" + curAccount->account + "userHistory.txt", ios::app);
-    ofile << curAccount->account << "\t\t取出:" << money << "\t\t" << time(nullptr) << endl << endl;
+    auto now = chrono::system_clock::now();
+    time_t now_time = chrono::system_clock::to_time_t(now);
+    ofile << curAccount->account << "\t\t取出:" << money << "\t\t" << ctime(&now_time) << endl << endl;
     ofile.close();
 
     return true;
@@ -585,7 +597,9 @@ bool User::transfer() {
 
             //明细记录转账多少
             ofstream ofile("../" + curAccount->account + "userHistory.txt", ios::app);
-            ofile << curAccount->account << "\t\t转账:" << money << "->" << temp->account << "\t\t" << time(nullptr) << endl << endl;
+            auto now = chrono::system_clock::now();
+            time_t now_time = chrono::system_clock::to_time_t(now);
+            ofile << curAccount->account << "\t\t转账:" << money << "->" << temp->account << "\t\t" << ctime(&now_time) << endl << endl;
             ofile.close();
 
             return true;
@@ -619,7 +633,9 @@ bool User::changeInfo() {
 
     //明细记录修改信息
     ofstream ofile("../" + curAccount->account + "userHistory.txt", ios::app);
-    ofile << curAccount->account << "\t\t修改信息\t\t" << time(nullptr) << endl << endl;
+    auto now = chrono::system_clock::now();
+    time_t now_time = chrono::system_clock::to_time_t(now);
+    ofile << curAccount->account << "\t\t修改信息\t\t" << ctime(&now_time) << endl << endl;
     ofile.close();
 
     return true;
