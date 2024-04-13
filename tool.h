@@ -43,6 +43,7 @@ public:
     //修改用户信息
     bool changeInfo();
 
+    //析构函数
     ~Administrators();
 
     user *head = nullptr;
@@ -74,7 +75,7 @@ public:
     bool importInfo();
 
     //快速导出用户信息
-    bool exportInfo();
+    bool exportInfo() const;
 
     //登录
     bool login();

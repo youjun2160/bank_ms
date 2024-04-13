@@ -108,7 +108,7 @@ int main() {
                 break;
             case 0:
                 // 退出系统
-                cout << "感谢使用银行系统，再见！" << endl;
+                cout << "感谢使用银行系统，再见!" << endl;
                 break;
             default:
                 cout << "输入有误，请重新输入" << endl;

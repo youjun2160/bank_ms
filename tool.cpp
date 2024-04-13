@@ -262,6 +262,7 @@ bool Administrators::importInfo() {
             newUser->pre = tail;
             tail = newUser;
         }
+        tail->next = nullptr;
     }
     ifile.close();
     return true;
@@ -359,7 +360,7 @@ bool Administrators::changeInfo() {
             }
 
             while(temp != nullptr) {
-                ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << endl;
+                ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << " " << temp->balance << endl;
                 temp = temp->next;
             }
             ofile.close();
@@ -374,25 +375,11 @@ bool Administrators::changeInfo() {
 
 //析构函数
 Administrators::~Administrators() {
-    //保存信息
-    ofstream ofile("userInformation.txt");
-    if(!ofile.is_open()) {
-        cout << "文件打开失败！" << endl;
-        return;
-    }
-    user *temp = head;
-    while(temp != nullptr) {
-        ofile << temp->account << " " << temp->name << " " << temp->password << " " << temp->id << " " << temp->phoneNumber << " " << temp->balance << endl;
-        temp = temp->next;
-    }
-    ofile.close();
-
     //释放内存
-    user *temp2 = head;
-    while(temp2 != nullptr) {
-        head = temp2->next;
-        delete temp2;
-        temp2 = head;
+    while(head != nullptr) {
+        user *temp = head;
+        head = head->next;
+        delete temp;
     }
 }
 
@@ -440,13 +427,14 @@ bool User::importInfo() {
             newUser->pre = tail;
             tail = newUser;
         }
+        tail->next = nullptr;
     }
     ifile.close();
     return true;
 }
 
 //快速导出用户信息
-bool User::exportInfo() {
+bool User::exportInfo() const {
     ofstream ofile("userInformation.txt");
     if (!ofile.is_open()) {
         cout << "文件打开失败！" << endl;
@@ -612,10 +600,9 @@ User::~User() {
     }
 
     //释放内存
-    user *temp = head;
-    while(temp != nullptr) {
-        user *delUser = temp;
-        temp = temp->next;
-        delete delUser;
+    while(head != nullptr) {
+        user *temp = head;
+        head = head->next;
+        delete temp;
     }
 }
